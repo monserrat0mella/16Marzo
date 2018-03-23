@@ -11,27 +11,45 @@
 <script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"
   integrity="sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw=="
   crossorigin=""></script>
-<link href="https://fonts.googleapis.com/css?family=Roboto+medium:400,700" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet">
 <link href="style.css" rel="stylesheet">
 </head>
 <body>
 <div class="container">
 	<div class="row">
-		<div class="col-sm-12 py-5">
+		<div class="col-sm-6 py-6">
+            <h1>el clima esta raro</h1>
+            <h2>Rancagua</h2>
+            <p class="bajada">El clima en Rancagua es cálido y templado. Los meses de invierno son mucho más lluviosos que los meses de verano en Rancagua. Esta ubicación está clasificada como Csc por Köppen y Geiger. La temperatura promedio en Rancagua es 14.1 ° C. Hay alrededor de precipitaciones de 474 mm. Enero es el mes más cálido del año. La temperatura en enero promedios 21.3 ° C. junio es el mes más frío, con temperaturas promediando 8.0 ° C. Hay una diferencia de 111 mm de precipitación entre los meses más secos y los más húmedos. A lo largo del año, las temperaturas varían en 13.3 ° C.</p>
+        </div>
+        
+        <div class="col-sm-6 py-5">
+             <div id="mapid"></div>
+        </div>
+        
+        <div class="col-sm-12 py-5">
+            <p>Fuente: https://es.climate-data.org/location/2053/</p>
+        </div>
+            
+            
 			<h1>Está raro el clima</h1>
-			<h2>En todo el mundo</h2>
-			<p>El <a href="https://openweathermap.org/api" target="_blank">OpenWeatherMap</a> me entrega el tiempo atmosférico actual de cualquier parte del mundo. Ese tiempo se puede consultar directamente, como un dato duro, gracias a una <a href="https://openweathermap.org/api" target="_blank">API</a>. Les recomiendo NO abusar del "refresh" de su página, porque cada vez que lo hagan la API va a contar y eventualmente se aburrirá de tanta consulta.</p>
-			<p>Para hacer una consulta específica corresponde ir a buscar un recursos particular, que se estructura de la siguiente manera:</p>
-			<pre><code>http://api.openweathermap.org/data/2.5/weather?q=CIUDAD&units=metric&appid=APIKey', true</code></pre>
-			<p>En el caso de que quiera preguntar por el tiempo en Tokio, tengo que escribir lo siguiente:</p>
-			<pre><code>http://api.openweathermap.org/data/2.5/weather?q=Tokyo&units=metric&appid=1111111111</code></pre>
-			<p>¿Cuál es el origen del dato? Si lo georreferenciamos, es:</p>
+			<h2>En Rancagua, Chile</h2>
+    
+			<p>La ciudad de Rancagua se emplaza en la cuenca del mismo nombre, que se extiende desde la Angostura de Paine, hasta la Angostura de Pelequén, y que forma parte de la Depresión Intermedia.20​ La característica principal de esta cuenca es que se encuentra encajonada entre la Cordillera de los Andes y la Cordillera de la Costa.
+
+            La Coordillera de Los Andes alcanza en esta cuenca su mayor altitud, entre el Aconcagua y el Pico del Barroso, donde las cumbres sobrepasan los 5.500 msnm.
+
+            La comuna limita al norte con el estero La Cadena, que la separa de la comuna de Graneros, al sur con el Río Cachapoal que la separa de la comuna de Olivar, al este con el estero de Machalí que la separa de dicha comuna y al oeste con la loma de la Bandera y el Cordón de los cerros de Lo Miranda que la separa de la comuna de Doñihue.</p>
+			<p>El clima que se observa en Rancagua es "templado con estación seca prolongada", es decir, un clima mediterráneo. Por lo tanto, las estaciones del año se presentan claramente marcadas, con veranos en general sumamente calurosos y secos e inviernos lluviosos, suaves y húmedos. En años fríos, no son raras unas leves nevadas.21​ Aunque hay precipitaciones durante todo el año, los meses donde se concentran las lluvias son en mayo, junio, julio y agosto. En Rancagua, caen en promedio entre 505 y 538 mm anuales.20​
+
+            </p>
 			<div id="mapid" style="width: 400px;  height: 400px; margin-bottom: 20px;"></div>
-			<p>Un par de aclaraciones necesarias:</p>
 			<ul>
-			<li>El 1111111111 es el APIKey que te ofrece como ejemplo en <a href="http://openweathermap.org/appid">How to use API key in API call</a>. Para hacer la consulta yo estoy usando otra, y ustedes deben usar la suya propia.</li>
-			<li>En las instrucciones del uso de la API se recomienda que no uses nombre de ciudad, sino que te vayas a la segura con un código. Puedes encontrar <a href="http://bulk.openweathermap.org/sample/city.list.json.gz">un JSON de esos códigos por aquí</a> (por su peso está comprimido, como gz)</li>
+			<li></li>
+
 			</ul>
+        <img src="auge-urbano-en-rancagua850x290.jpg"> 
+
 		</div>
 		<div class="col-sm-12" style="border-top:1px solid #eee;">
 			<div class="row pt-3 pb-4 small">
@@ -44,10 +62,16 @@
 			</div>		
 		</div>
 	</div>
-</div>
 <script>
+    var urlStart="https://api.openweathermap.org/data/2.5/weather";
+    var urlCityID= 3873775;
+    var urlUnit="metric";
+    var urlApiKey = "cac9bc55ae654a24ced9643f2035463d";
+    var url=urlStart+"?id=" + urlCityID + "&units=" + urlUnit + "&appid" + urlApiKey; 
+    
+
 var request = new XMLHttpRequest();
-request.open('GET', 'http://api.openweathermap.org/data/2.5/weather?q=Tokyo&units=metric&appid=cac9bc55ae654a24ced9643f2035463d', true);
+request.open('GET',url, true);
 request.onload = function () {
   var data = JSON.parse(this.response);
   var lat = data.coord.lat;
@@ -63,20 +87,16 @@ request.onload = function () {
   console.log(humedad + "%");
   console.log(temperatura + "º C");
     if (temperatura> 18){
-        document.body.style.backgroundColor = "#d30ca4" ;
+        document.body.style.backgroundColor = "#f8bbd0" ;
     } 
 
     else if (temperatura <18){
-        document.body.style.backgroundColor = "#2de518" ;
+        document.body.style.backgroundColor = "#ff8a80" ;
     } 
     
     else{
-        document.body.style.backgroundColor = "#d0958d" ;
+        document.body.style.backgroundColor = "#a7ffeb" ;
     }
-    
-    
-    
-    
     
     
   //mapa
@@ -90,6 +110,7 @@ request.onload = function () {
 	.bindPopup("<h5>"+ ciudad + "</h5><p>Hay " + temperatura + "ºC, con " + humedad + "% de humedad<p>").openPopup();
 }
 request.send();
+    
 </script>
 </body>
 </html>

@@ -1,6 +1,7 @@
 <!doctype html>
 <html>
 <head>
+    
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -19,12 +20,22 @@
 	<div class="row">
 		<div class="col-sm-12 py-5">
 			<h1>Tembló</h1>
-			<h2>En alguna parte del mundo</h2>
+			<h2>En alguna parte del mundo
+            <link href="https://fonts.googleapis.com/css?family=Nunito+Sans" rel="stylesheet">
+            </h2>
 			<p>Usaré espanglish:</p>
 			<p>El <a href="https://earthquake.usgs.gov/">Earthquake Hazards Program</a> del <a href="https://www.usgs.gov/">USGS</a>, tiene un servicio de <a href="https://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php">GeoJSON Summary Format</a>, donde pueder is a buscar data sobre los movimientos telúricos alrededor del mundo.</p>
 			<p>Consultando el registro de los M4.5+ Earthquakes del Past Day, yo puedo asegurarles de que el último movimento ocurrió por acá: <span id="lugar"></span>.</p>
-			<p>Para ser más preciso, este es el epicentro registrado:</p>
-			<div id="mapid" style="width: 400px;  height: 400px; margin-bottom: 20px;"></div>
+			<p>Para ser más preciso, este es el epicentro registrado:
+            <link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet">
+            </p>
+            
+            <p>Mediante consulta a los M4.5+ Earthquakes del Past Day,
+            podemos enterarnos que el último registro corresponde a un
+            movimiento de M<span id="magnitud"></span> ocurrido a las <
+            </span></p>
+            
+			<div id="mapid" ></div>
 			<p>Si quieren ver la hora a la que ocurrió este movimiento telúrico, métanse a la consola de Javascript del Navegador, allí hay un número raro. Ese número es un Unix Timestamp, que pueden traducir en <a href="https://www.unixtimestamp.com/" target="_blank">https://www.unixtimestamp.com/</a></p>
 		</div>
 		<div class="col-sm-6 pb-5">
@@ -46,6 +57,7 @@
 	</div>
 </div>
 <script>
+    var url="https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_day.geojson";
 var request = new XMLHttpRequest();
 request.open('GET', 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_day.geojson', true);
 request.onload = function () {
@@ -53,9 +65,14 @@ request.onload = function () {
 	var lat = data.features[0].geometry.coordinates[1];
 	var lon = data.features[0].geometry.coordinates[0];
 	var where = data.features[0].properties.place;
-	var when = (data.features[0].properties.time)/1000;
+	var when = new Date(data.features[0].properties.time)/1000;
+    var whenUTC = when.toUTCString();
 	var magnitud = data.features[0].properties.mag
-	document.getElementById("lugar").innerHTML = where;
+	document.getElementById("magnitud").innerHTML = magnitud;
+    document.getElementById("lugar").innerHTML= where.split(',')[1];
+    document.getElementById("hora").innerHTML= whenUTC.split(' ')[4];
+    document.getElementById("coords").innerHTML= "("+ lat + ", " + lon
+        +")";
 	console.log(data);
 	console.log(when);
 	//mapa
